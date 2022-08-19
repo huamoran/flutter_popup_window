@@ -10,7 +10,7 @@ typedef AnimatedWidgetBuilder = Widget Function(BuildContext context,
 
 class PopupWindowButton<T> extends StatefulWidget {
   const PopupWindowButton(
-      {Key key,
+      {Key? key,
       @required this.buttonBuilder,
       @required this.windowBuilder,
       this.offset = Offset.zero,
@@ -23,7 +23,7 @@ class PopupWindowButton<T> extends StatefulWidget {
   /// 显示按钮button
   /// the builder for child,
   /// button which clicked will popup a window
-  final WidgetBuilder buttonBuilder;
+  final WidgetBuilder? buttonBuilder;
 
   /// window 出现的位置。
   /// where window is in relation to button.
@@ -35,34 +35,34 @@ class PopupWindowButton<T> extends StatefulWidget {
 
   /// 需要显示的window
   /// the target window
-  final AnimatedWidgetBuilder windowBuilder;
+  final AnimatedWidgetBuilder? windowBuilder;
 
-  final VoidCallback onWindowShow;
+  final VoidCallback? onWindowShow;
 
-  final VoidCallback onWindowDismiss;
+  final VoidCallback? onWindowDismiss;
 
   @override
   _PopupWindowButtonState createState() {
     return _PopupWindowButtonState();
   }
 
-  static _PopupWindowButtonState of(BuildContext context) {
-    final _PopupWindowScope scope =
+  static _PopupWindowButtonState? of(BuildContext context) {
+    final _PopupWindowScope? scope =
         context.dependOnInheritedWidgetOfExactType<_PopupWindowScope>();
     return scope?.state;
   }
 }
 
 void showWindow<T>(
-    {@required BuildContext context,
-    RelativeRect position,
+    {@required BuildContext? context,
+    RelativeRect? position,
     int duration = _windowPopupDuration,
-    String semanticLabel,
-    @required AnimatedWidgetBuilder windowBuilder,
-    VoidCallback onWindowShow,
-    VoidCallback onWindowDismiss}) {
+    String? semanticLabel,
+    @required AnimatedWidgetBuilder? windowBuilder,
+    VoidCallback? onWindowShow,
+    VoidCallback? onWindowDismiss}) {
   Navigator.push(
-    context,
+    context!,
     _PopupWindowRoute<T>(
         position: position,
         duration: duration,
@@ -77,15 +77,15 @@ void showWindow<T>(
 
 class _PopupWindowButtonState<T> extends State<PopupWindowButton> {
   void showPopupWindow() {
-    final RenderBox button = context.findRenderObject();
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    final RenderBox? button = context.findRenderObject() as RenderBox;
+    final RenderBox? overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
-        button.localToGlobal(widget.offset, ancestor: overlay),
+        button!.localToGlobal(widget.offset, ancestor: overlay),
         button.localToGlobal(button.size.bottomRight(Offset.zero),
             ancestor: overlay),
       ),
-      Offset.zero & overlay.size,
+      Offset.zero & overlay!.size,
     );
 
     showWindow<T>(
@@ -126,27 +126,27 @@ class _PopupWindowRoute<T> extends PopupRoute<T> {
         reverseCurve: const Interval(0.0, _kWindowCloseIntervalEnd));
   }
 
-  final RelativeRect position;
-  final String semanticLabel;
+  final RelativeRect? position;
+  final String? semanticLabel;
   @override
-  final String barrierLabel;
-  final int duration;
-  final AnimatedWidgetBuilder windowBuilder;
-  final VoidCallback onWindowShow;
-  final VoidCallback onWindowDismiss;
+  final String? barrierLabel;
+  final int? duration;
+  final AnimatedWidgetBuilder? windowBuilder;
+  final VoidCallback? onWindowShow;
+  final VoidCallback? onWindowDismiss;
 
   @override
   Duration get transitionDuration =>
-      duration == 0 ? _kWindowDuration : Duration(milliseconds: duration);
+      duration == 0 ? _kWindowDuration : Duration(milliseconds: duration!);
 
   @override
   bool get barrierDismissible => true;
 
   @override
-  Color get barrierColor => null;
+  Color get barrierColor => Color(0x11000000);// org null
 
   @override
-  bool didPop(T result) {
+  bool didPop(T? result) {
     onWindowDismiss?.call();
     return super.didPop(result);
   }
@@ -161,11 +161,11 @@ class _PopupWindowRoute<T> extends PopupRoute<T> {
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
     return CustomSingleChildLayout(
-      delegate: _PopupWindowLayout(position),
+      delegate: _PopupWindowLayout(position!),
       child: AnimatedBuilder(
           animation: animation,
-          builder: (BuildContext context, Widget child) {
-            return windowBuilder(context, animation, secondaryAnimation);
+          builder: (BuildContext context, Widget? child) {
+            return windowBuilder!(context, animation, secondaryAnimation);
           }),
     );
   }
@@ -198,7 +198,7 @@ class _PopupWindowLayout extends SingleChildLayoutDelegate {
     double y = position.top;
 
     // Find the ideal horizontal position.
-    double x;
+    double x = 0;
     if (position.left > position.right) {
       // Menu button is closer to the right edge, so grow to the left, aligned to the right edge.
       x = size.width - position.right - childSize.width;
@@ -216,10 +216,10 @@ class _PopupWindowLayout extends SingleChildLayoutDelegate {
 }
 
 class _PopupWindowScope extends InheritedWidget {
-  const _PopupWindowScope({Key key, this.state, Widget child})
+  const _PopupWindowScope({Key? key, this.state, required Widget child})
       : super(key: key, child: child);
 
-  final _PopupWindowButtonState state;
+  final _PopupWindowButtonState? state;
 
   @override
   bool updateShouldNotify(_PopupWindowScope oldWidget) {
