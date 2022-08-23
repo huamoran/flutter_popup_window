@@ -98,7 +98,7 @@ packages:
   popup_window:
     dependency: "direct main"
     description:
-      path: "../../popup_window"
+      path: ".."
       relative: true
     source: path
     version: "1.1.2"
