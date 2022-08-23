@@ -24,7 +24,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
   popup_window:
-    path: ../../popup_window
+    path: ../
 
 dev_dependencies:
   flutter_test:
