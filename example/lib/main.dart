@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:popup_window/popup_window.dart';
+import 'package:flutter_popup_window/flutter_popup_window.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
 const double windowHeight = 200;
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, this.title = ''}) : super(key: key);
   final String title;
 
   @override
@@ -84,7 +84,7 @@ class _PopupWindowBtnState extends State<PopupWindowBtn> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_autoShowDialog) {
         _autoShowDialog = false;
-        PopupWindowButton.of(context).showPopupWindow();
+        PopupWindowButton.of(context)!.showPopupWindow();
       }
     });
     super.didChangeDependencies();
